@@ -1,0 +1,17 @@
+---
+
+- hosts: localhost
+  connection: local
+  tasks:
+
+  - name: Install openresty
+    community.docker.docker_compose:
+      project_name: Coding-Challenge
+      definition:
+        version: '3'
+        services:
+           openresty:
+             image: openresty/openresty:alpine
+             container_name: openresty
+             ports:
+               - "80:80"
