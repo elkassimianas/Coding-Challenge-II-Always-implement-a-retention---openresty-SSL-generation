@@ -4,29 +4,40 @@
   connection: local
   tasks:
 
-  - name: Install openresty
+  - name: Coding Challenge
     community.docker.docker_compose:
       project_name: Coding-Challenge
       definition:
         version: '3'
         services:
-           openresty:
-             image: openresty/openresty:alpine
-             container_name: openresty
-             ports:
-               - "9000:80"
-             restart: always
+          # openresty:
+          #   image: openresty/openresty:alpine
+          #   container_name: openresty
+          #   ports:
+          #     - "9000:80"
+          #   networks:
+          #     - Youcan-network
+          #   restart: always
            nginx:
-             image: nginx:alpine
+             build: /Users/anaselkassimi/Desktop/Coding-Challenge2/nginx
+             image: nginx
              container_name: nginx
              ports:
-               - "7000:80"
+               - "80:80"
+             networks:
+               - Youcan-network
              volumes:
-               - coding-challenge:/usr/share/nginx/html
+               - coding-challenge:/var/www/html
              restart: always
+             depends_on:
+               - php
            php:
-             image: php:7.4-fpm-alpine
+             image: php:7.4-fpm
              container_name: php
+             ports:
+               - "9000"
+             networks:
+               - Youcan-network
              volumes:
                - coding-challenge:/var/www/html
              restart: always
@@ -37,3 +48,7 @@
                type: none
                device: "/Users/anaselkassimi/Desktop/Coding-Challenge2/volumes/"
                o: bind
+        networks:
+           Youcan-network:
+             name: Youcan-network
+             driver: bridge
