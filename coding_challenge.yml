@@ -10,42 +10,47 @@
       definition:
         version: '3'
         services:
-           openresty:
-             image: openresty/openresty:focal
-             container_name: openresty
-             ports:
-               - "9000:80"
-             networks:
-               - Youcan-network
-             restart: always
            nginx:
              build: /Users/anaselkassimi/Desktop/Coding-Challenge2/nginx
              image: nginx
              container_name: nginx
              ports:
                - "80:80"
+            #  volumes:
+            #    - html-volume:/usr/share/nginx/html
              networks:
                - Youcan-network
-             volumes:
-               - coding-challenge:/usr/share/nginx/html
              restart: always
              depends_on:
-               - php
+               - openresty
+           openresty:
+             build: /Users/anaselkassimi/Desktop/Coding-Challenge2/openresty
+             image: openresty
+             container_name: openresty
+             ports:
+               - "8080:8080"
+             volumes:
+               - html-volume:/usr/local/openresty/nginx/html
+             networks:
+               - Youcan-network
+             restart: always
+             depends_on:
+                - php
            php:
              image: php:7.4-fpm
              container_name: php
              networks:
                - Youcan-network
              volumes:
-               - coding-challenge:/usr/share/nginx/html
+               - html-volume:/var/www/html
              restart: always
         volumes:
-           coding-challenge:
+           html-volume:
              driver: local
              driver_opts:
                type: none
-               device: "/Users/anaselkassimi/Desktop/Coding-Challenge2/volumes/"
-               o: bind
+               device: "/Users/anaselkassimi/Desktop/Coding-Challenge2/volumes/html"
+               o: bind        
         networks:
            Youcan-network:
              name: Youcan-network
